@@ -1,3 +1,29 @@
+global:
+  affinity: &affinity
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: cloud.google.com/gke-nodepool
+            operator: In
+            values:
+            - argilla
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - argilla
+          topologyKey: kubernetes.io/hostname
+
+  tolerations: &tolerations
+    - effect: NoExecute
+      key: dedicated
+      operator: Equal
+      value: argilla
+
 argilla:
   replicaCount: 1
   image:
@@ -35,33 +61,78 @@ argilla:
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 50
+  affinity: *affinity
+  tolerations: *tolerations
 
 # Elasticsearch installation is enabled by default.
 # To disable it, set `elasticsearch.useOperator` to `false`
 # and set `externalElasticsearch.host` to the host of your existing Elasticsearch instance.
 elasticsearch:
-  useOperator: true
-  version: 8.5.3
-  nodeCount: 1
-  disableAuthentication: true
-  resources:
-    requests:
-      cpu: 0.25
-      memory: 1Gi
-    limits:
-      cpu: 1
-      memory: 2Gi
-  persistence:
-    enabled: true
-    storage:
-      size: 1Gi
-      accessModes:
-      - ReadWriteOnce
+  fullnameOverride: "argilla-elasticsearch"
+  commonLabels: {}
+  enabled: false
+  image:
+    registry: docker.io
+    repository: bitnami/elasticsearch
+    tag: 8.5.3
+  security:
+    existingSecret: "argilla" # expected key: `elasticsearch-password`
+  master:
+    masterOnly: false
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 1
+        memory: 1Gi
+      limits:
+        cpu: 2
+        memory: 2Gi
+    affinity: *affinity
+    tolerations: *tolerations
+    persistence:
+      enabled: true
+      size: 20Gi
+  data:
+    replicaCount: 0
+  coordinating:
+    replicaCount: 0
+  ingest:
+    replicaCount: 0
 
 externalElasticsearch:
   host: "argilla.local"
   port: 9200
   path: "/es"
+
+postgresql:
+  fullnameOverride: "argilla-postgresql"
+  commonLabels: {}
+  enabled: true
+  architecture: standalone
+  image:
+    registry: docker.io
+    repository: bitnami/postgresql
+    tag: 16.6.0
+  auth:
+    username: "argilla"
+    database: "argilla"
+    existingSecret: "argilla"
+    secretKeys:
+      adminPasswordKey: "pgAdminPass"
+      userPasswordKey: "pgPass"
+  primary:
+    affinity: *affinity
+    tolerations: *tolerations
+    persistence:
+      enabled: true
+      size: 10Gi
+    networkPolicy:
+      enabled: false
+    pdb:
+      create: false
+  storageClass: "standard-rwo"
+  serviceAccount:
+    create: false
 
 redis:
   enabled: true
@@ -81,6 +152,8 @@ redis:
         limits:
           cpu: 1
           memory: 2Gi
+    affinity: *affinity
+    tolerations: *tolerations
 serviceAccount:
   create: false
 
@@ -94,3 +167,5 @@ worker:
     requests:
       cpu: 250m
       memory: 256Mi
+  affinity: *affinity
+  tolerations: *tolerations

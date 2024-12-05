@@ -4,18 +4,15 @@ metadata:
   name: {{ include "argilla.fullname" . }}-worker
   labels:
     {{- include "worker.labels" . | nindent 4 }}
-    app.kubernetes.io/component: worker
 spec:
   replicas: {{ .Values.worker.replicaCount | default 1 }}
   selector:
     matchLabels:
       {{- include "worker.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: worker
   template:
     metadata:
       labels:
         {{- include "worker.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: worker
     spec:
       containers:
         - name: {{ .Chart.Name }}-worker
@@ -45,3 +42,11 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-pvc
       {{- end }}
+{{- if .Values.argilla.affinity }}
+    affinity:
+{{ toYaml .Values.argilla.affinity | indent 6 }}
+{{- end }}
+{{- if .Values.argilla.tolerations }}
+    tolerations:
+{{ toYaml .Values.argilla.tolerations | indent 6 }}
+{{- end }}
