@@ -42,11 +42,11 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-pvc
       {{- end }}
-{{- if .Values.argilla.affinity }}
+{{- if .Values.worker.affinity }}
     affinity:
-{{ toYaml .Values.argilla.affinity | indent 6 }}
+{{ toYaml .Values.worker.affinity | indent 6 }}
 {{- end }}
-{{- if .Values.argilla.tolerations }}
+{{- if .Values.worker.tolerations }}
     tolerations:
-{{ toYaml .Values.argilla.tolerations | indent 6 }}
+{{ toYaml .Values.worker.tolerations | indent 6 }}
 {{- end }}
