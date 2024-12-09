@@ -62,3 +62,11 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.argilla.resources | nindent 12 }}
+{{- if .Values.argilla.affinity }}
+    affinity:
+{{ toYaml .Values.argilla.affinity | indent 6 }}
+{{- end }}
+{{- if .Values.argilla.tolerations }}
+    tolerations:
+{{ toYaml .Values.argilla.tolerations | indent 6 }}
+{{- end }}
