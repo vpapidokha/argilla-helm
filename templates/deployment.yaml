@@ -40,11 +40,6 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.argilla.auth.existingSecret }}
                   key:  {{ .Values.argilla.auth.secretKeys.ownerPassword }}
-            - name: API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.argilla.auth.existingSecret }}
-                  key: {{ .Values.argilla.auth.secretKeys.ownerApiKey }}
             - name: ARGILLA_DATABASE_URL
               value: {{ .Values.argilla.databaseUrl | quote }}
             {{- if .Values.argilla.persistence.enabled }}

@@ -13,7 +13,7 @@ argilla:
   replicaCount: 1
   image:
     repository: argilla/argilla-server
-    tag: pr-5727
+    tag: v2.5.0
   resources:
     requests:
       cpu: "1"
@@ -24,13 +24,13 @@ argilla:
     username: "argilla"
     existingSecret: "argilla"
     secretKeys:
-      ownerPassword: ownerUserPassword
-      ownerApiKey: ownerUserApiKey
+      ownerPassword: ownerPassword
+      ownerApiKey: ownerApiKey
       authSecretKey: authSecretKey
-  databaseUrl: "postgresql://argilla:argilla@argilla-postgresql.argilla.svc.cluster.local:5432/argilla"
+  databaseUrl: "postgresql+asyncpg://argilla:argilla@argilla-postgresql.argilla.svc.cluster.local:5432/argilla"
   persistence:
-    enabled: true
-    accessMode: ReadWriteOnce
+    enabled: false
+    accessMode: ReadWriteMany
     size: 2Gi
     mountPath: "/data"
   ingress:
@@ -49,7 +49,7 @@ argilla:
   affinity: *affinity
 
 elasticsearch:
-  host: "argilla-elasticsearch.argilla.svc.cluster.local"
+  host: "http://argilla-elasticsearch.argilla.svc.cluster.local"
   port: 9200
   path: "/es"
 
