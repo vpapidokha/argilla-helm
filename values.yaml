@@ -1,5 +1,13 @@
 global:
-  affinity:
+  affinity: &affinity
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: cloud.google.com/gke-nodepool
+            operator: In
+            values:
+            - argilla
 
 argilla:
   replicaCount: 1
@@ -38,6 +46,7 @@ argilla:
     minReplicas: 1
     maxReplicas: 3
     targetCPUUtilizationPercentage: 80
+  affinity: *affinity
 
 elasticsearch:
   host: "argilla-elasticsearch.argilla.svc.cluster.local"
