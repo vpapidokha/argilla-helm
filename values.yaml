@@ -59,6 +59,7 @@ redis:
   auth:
     enabled: false
   master:
+    affinity: *affinity
     persistence:
       enabled: true
       accessModes:
