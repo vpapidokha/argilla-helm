@@ -14,6 +14,14 @@ spec:
       labels:
         {{- include "argilla.selectorLabels" . | nindent 8 }}
     spec:
+  {{- if .Values.argilla.affinity }}
+      affinity:
+  {{ toYaml .Values.argilla.affinity | indent 6 }}
+  {{- end }}
+  {{- if .Values.argilla.tolerations }}
+      tolerations:
+  {{ toYaml .Values.argilla.tolerations | indent 6 }}
+  {{- end }}
       volumes:
       {{- if .Values.argilla.persistence.enabled }}
         - name: argilla-data
@@ -57,11 +65,3 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.argilla.resources | nindent 12 }}
-{{- if .Values.argilla.affinity }}
-    affinity:
-{{ toYaml .Values.argilla.affinity | indent 6 }}
-{{- end }}
-{{- if .Values.argilla.tolerations }}
-    tolerations:
-{{ toYaml .Values.argilla.tolerations | indent 6 }}
-{{- end }}

@@ -14,6 +14,14 @@ spec:
       labels:
         {{- include "worker.selectorLabels" . | nindent 8 }}
     spec:
+  {{- if .Values.argilla.affinity }}
+      affinity:
+  {{ toYaml .Values.argilla.affinity | indent 6 }}
+  {{- end }}
+  {{- if .Values.argilla.tolerations }}
+      tolerations:
+  {{ toYaml .Values.argilla.tolerations | indent 6 }}
+  {{- end }}
       containers:
         - name: {{ .Chart.Name }}-worker
           image: "{{ .Values.argilla.image.repository }}:{{ .Values.argilla.image.tag }}"
@@ -42,11 +50,3 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-pvc
       {{- end }}
-{{- if .Values.worker.affinity }}
-    affinity:
-{{ toYaml .Values.worker.affinity | indent 6 }}
-{{- end }}
-{{- if .Values.worker.tolerations }}
-    tolerations:
-{{ toYaml .Values.worker.tolerations | indent 6 }}
-{{- end }}
