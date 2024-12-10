@@ -20,6 +20,7 @@ argilla:
       memory: "1Gi"
     limits:
       memory: "2Gi"
+  host: "airflow.example.com"
   auth:
     username: "argilla"
     existingSecret: "argilla"
@@ -33,14 +34,6 @@ argilla:
     accessMode: ReadWriteMany
     size: 2Gi
     mountPath: "/data"
-  ingress:
-    enabled: true
-    className: "nginx"
-    host: "airflow.example.com"
-    annotations:
-      kubernetes.io/ingress.class: nginx
-      nginx.ingress.kubernetes.io/ssl-redirect: "false"
-      nginx.ingress.kubernetes.io/use-regex: "true"
   hpa:
     enabled: true
     minReplicas: 1

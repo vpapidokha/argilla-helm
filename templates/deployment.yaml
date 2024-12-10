@@ -47,7 +47,7 @@ spec:
               value: {{ .Values.argilla.persistence.mountPath | quote }}
             {{- end }}
             - name: ARGILLA_BASE_URL
-              values: {{ .Values.argilla.ingress.host | quote }}
+              values: {{ .Values.argilla.host | quote }}
           ports:
             - containerPort: 6900
           volumeMounts:
