@@ -9,4 +9,6 @@ spec:
     {{- include "argilla.selectorLabels" . | nindent 4 }}
   ports:
   - name: http
-    port: 6900
+    port: 80
+    protocol: TCP
+    targetPort: 6900
