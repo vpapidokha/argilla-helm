@@ -9,16 +9,11 @@ To learn more about the release, try:
 
 
 Argilla:
-
-{{- if .Values.argilla.ingress.enabled }}
-  You can access the Argilla server at: http://{{ .Values.argilla.ingress.host }}
-{{- else }}
   To access the Argilla server, run these commands:
   $ export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "argilla.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
   $ kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 6900:6900
 
-Then access the Argilla server at http://localhost:6900
-{{- end }}
+  Then access the Argilla server at http://localhost:6900
 {{- if .Values.argilla.persistence.enabled }}
   Persistence is enabled for Argilla.
   Your Argilla data will be stored in a Persistent Volume Claim named: {{ .Release.Name }}-argilla-pvc
